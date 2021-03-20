@@ -1,0 +1,26 @@
+version: "3.8"
+
+services:
+  server-bridge-network-no-ports:
+    container_name: server-bridge-network-no-ports
+    image: ghcr.io/igor-kupczynski/netutil:latest
+    command: ["-port", "8081"]
+
+  server-bridge-network-published-ports:
+    container_name: server-bridge-network-published-ports
+    image: ghcr.io/igor-kupczynski/netutil:latest
+    command: ["-port", "8082"]
+    ports:
+      - "8082:8082"
+
+  server-host-network:
+    container_name: server-host-network
+    image: ghcr.io/igor-kupczynski/netutil:latest
+    command: ["-port", "8083"]
+    network_mode: "host"
+
+  server-no-network:
+    container_name: server-no-network
+    image: ghcr.io/igor-kupczynski/netutil:latest
+    command: ["-port", "8084"]
+    network_mode: "none"
