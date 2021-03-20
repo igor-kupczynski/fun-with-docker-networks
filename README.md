@@ -1,4 +1,4 @@
-# Fun with docker networking
+# Fun with docker networks
 
 
 ## Host
