@@ -55,7 +55,7 @@ d688eabec6a5   ghcr.io/igor-kupczynski/netutil:latest   "/app/netutil-serve …"
 ```
 
 
-## Try to reach the containers on the host address, from the host
+### Try to reach the containers on the host address, from the host
 
 ```sh
 for p in 8081 8082 8083 8084
@@ -71,7 +71,7 @@ done
 [FAIL] Can't connect to localhost:8084
 ```
 
-## Find out the network the containers are on and their IPs
+### Find out the network the containers are on and their IPs
 
 ```sh
 for c in `docker ps -a -q`
@@ -114,7 +114,7 @@ sudo ln -s /var/run/docker/netns  /var/run/netns
 
 Docker mounts the network namespaces under a different directory, where `ip netns` doesn't expect them. [Learn more](https://stackoverflow.com/questions/31265993/docker-networking-namespace-not-visible-in-ip-netns-list).
 
-## Try to reach the containers on their IP addresses, from the host
+### Try to reach the containers on their IP addresses, from the host
 
 ```sh
 TO_CHECK=( "172.19.0.2:8081" "172.19.0.3:8082" )
@@ -198,7 +198,7 @@ In this case we now that `13-14` pair connects `server-bridge-network-no-ports` 
 Docker compose creates one such a bridge per _project_.
 
 
-## Connection between the containers
+### Connection between the containers
 
 The containers on the same bridge network `172.19.0.0/16`:
 
@@ -212,7 +212,7 @@ $ docker exec -ti server-bridge-network-no-ports curl -s "172.19.0.3:8082/quote"
 [ OK ] Connected to 172.19.0.3:8082
 ```
 
-## Access the host from within the containers
+### Access the host from within the containers
 
 This is easy for the `server-host-network` as it is a part of the host network:
 ```sh
@@ -252,3 +252,31 @@ Indeed, the result is the same as from the host:
 [ OK ] Connected to 172.19.0.1:8083
 [FAIL] Can't connect to 172.19.0.1:8084
 ```
+
+### No network
+
+Well, no network doesn't have any network devices. It's up to you to create them in its network namespace and connect them to the other networks.
+
+Only loopback:
+```sh
+$ docker exec -ti server-no-network ip link
+1: lo: <LOOPBACK,UP,LOWER_UP> mtu 65536 qdisc noqueue state UNKNOWN mode DEFAULT group default qlen 1000
+    link/loopback 00:00:00:00:00:00 brd 00:00:00:00:00:00
+```
+
+## Summary
+
+Host can access:
+1. Ports on the `--network host` containers via `localhost:<container-port>`.
+2. Published ports on the `--network bridge` containers. A port is published `-p<host-port>:<container-port>` then it is accessible via `localhost:<host-port>`.
+3. Not published ports on `--network bridge` containers via `<container-ip-address>:<container-port>`
+
+For host mode containers (`--network host`) it is the same as for the host.
+
+Bridge network containers can access:
+1. Ports on other containers in the same bridge network via `<container-ip>:<container-port>`.
+2. Ports on the host (or host-mode containers) via `<host-ip-in-the-bridge-network>:<host-port>` (and you can find the host ip by looking at the default gateway).
+
+What's missing here?
+- How does the bridge network containers can access the public internet net?
+- How does the port publishing work?
