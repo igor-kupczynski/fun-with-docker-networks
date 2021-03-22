@@ -1,5 +1,9 @@
 # Fun with docker networks
 
+In this post I research how various docker network options work.
+
+We run 4 containers with different settings:
+![Docker containers with various network settings](./docker-networks.png)
 
 ## Host
 
@@ -277,6 +281,6 @@ Bridge network containers can access:
 1. Ports on other containers in the same bridge network via `<container-ip>:<container-port>`.
 2. Ports on the host (or host-mode containers) via `<host-ip-in-the-bridge-network>:<host-port>` (and you can find the host ip by looking at the default gateway).
 
-What's missing here?
-- How does the bridge network containers can access the public internet net?
+### TODO / future work:
 - How does the port publishing work?
+- Bridge network containers can access the public internet. How does it work?
