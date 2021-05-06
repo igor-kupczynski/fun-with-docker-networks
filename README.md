@@ -1,3 +1,5 @@
+Companion repo to https://kupczynski.info/2021/03/22/fun-with-docker-networks.html
+
 # Fun with docker networks
 
 In this post I research how various docker network options work.
